@@ -1,5 +1,5 @@
 .page {
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -8,9 +8,9 @@
   /* Premium dark overlay on top of background image */
   background: linear-gradient(
       180deg, 
-      rgba(10, 15, 30, 0.4) 0%, 
-      rgba(10, 15, 30, 0.25) 50%, 
-      rgba(10, 15, 30, 0.5) 100%
+      rgba(10, 15, 30, 0.5) 0%, 
+      rgba(10, 15, 30, 0.45) 50%, 
+      rgba(10, 15, 30, 0.7) 100%
     ),
     url('/background-image-landing-page.png');
   background-size: cover;
@@ -19,7 +19,7 @@
   background-attachment: fixed;
   color: #ffffff;
   position: relative;
-  overflow: hidden; /* No scroll */
+  overflow-y: auto;
   font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
@@ -50,16 +50,13 @@
 /* Page content layout */
 .content {
   width: 100%;
-  flex: 1;
-  max-width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 4vw 8px;
+  padding: 40px 24px 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between; /* Spread hero, video, footer */
   z-index: 5;
-  overflow: hidden;
 }
 
 /* Glassmorphic Error Toast */
@@ -168,11 +165,7 @@
   color: #d97706;
 }
 
-@media (max-height: 640px) {
-  .footer {
-    display: none; /* Hide footer on ultra-short screens to fit contents */
-  }
-}
+
 
 .ctaWrapper {
   margin: 0.5vh 0 1vh;
