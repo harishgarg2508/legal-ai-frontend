@@ -3,9 +3,9 @@
   top: 0; left: 0;
   height: 100vh;
   width: 270px;
-  /* Premium warm cream gradient and background statue shifted down */
+  /* Premium white top fade effect over sidebar image */
   background: 
-    linear-gradient(180deg, rgba(254, 252, 246, 0.98) 0%, rgba(254, 252, 246, 0.94) 25%, rgba(254, 252, 246, 0) 50%),
+    linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.96) 25%, rgba(255, 255, 255, 0.75) 55%, rgba(255, 255, 255, 0.3) 80%, rgba(255, 255, 255, 0.08) 100%),
     url('/sidebar-image.png');
   background-size: cover;
   background-position: left 0 bottom -35px;

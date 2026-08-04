@@ -19,7 +19,7 @@ export default function RouteGuard({ children, requiredRole }: RouteGuardProps) 
 
   useEffect(() => {
     if (loading) return;
-    if (!dbUser) { router.replace('/login'); return; }
+    if (!dbUser) { router.replace('/'); return; }
     if (requiredRole && dbUser.role !== requiredRole) {
       router.replace(dbUser.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard');
     }
