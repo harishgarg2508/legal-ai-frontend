@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import styles from './topbar.module.css';
 
 const ROUTE_TITLES: Record<string, { title: string; breadcrumb: string }> = {
@@ -20,6 +21,7 @@ const ROUTE_TITLES: Record<string, { title: string; breadcrumb: string }> = {
 export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const pathname = usePathname();
   const meta = ROUTE_TITLES[pathname] ?? { title: 'Legal AI', breadcrumb: '' };
+  const { signOut } = useAuth();
 
   return (
     <header className={styles.topbar}>
@@ -46,6 +48,9 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
         </button>
         <button className={styles.iconBtn} title="Help">
           ❓
+        </button>
+        <button className={`${styles.iconBtn} ${styles.signOutBtn}`} onClick={signOut} title="Sign Out">
+          ↩
         </button>
       </div>
     </header>

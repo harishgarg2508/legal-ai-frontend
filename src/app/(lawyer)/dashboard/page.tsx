@@ -70,10 +70,10 @@ export default function DashboardPage() {
   };
 
   const stats = [
-    { icon: '👥', label: 'Total Clients', value: loading ? '—' : dashboardData.clientCount, color: '#ede9fe' },
-    { icon: '⚖️', label: 'Active Cases', value: loading ? '—' : dashboardData.caseCount, color: '#dbeafe' },
-    { icon: '💬', label: 'Unread Messages', value: loading ? '—' : dashboardData.unreadMessageCount, color: '#dcfce7' },
-    { icon: '📅', label: 'Upcoming Hearings', value: loading ? '—' : dashboardData.upcomingHearingCount, color: '#fef9c3' },
+    { icon: '👥', label: 'Total Clients', value: loading ? '—' : dashboardData.clientCount },
+    { icon: '⚖️', label: 'Active Cases', value: loading ? '—' : dashboardData.caseCount },
+    { icon: '💬', label: 'Unread Messages', value: loading ? '—' : dashboardData.unreadMessageCount },
+    { icon: '📅', label: 'Upcoming Hearings', value: loading ? '—' : dashboardData.upcomingHearingCount },
   ];
 
   return (
@@ -96,7 +96,7 @@ export default function DashboardPage() {
         {stats.map((s) => (
           <div key={s.label} className={styles.statCard}>
             <div className={styles.statHeader}>
-              <div className={styles.statIcon} style={{ background: s.color }}>
+              <div className={styles.statIcon}>
                 {s.icon}
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
             ) : (
               dashboardData.recentMessages.map((m) => (
                 <div key={m.id} className={styles.listRow}>
-                  <div className={styles.rowIcon} style={{ background: '#ede9fe' }}>
+                  <div className={styles.rowIcon}>
                     👤
                   </div>
                   <div className={styles.rowContent}>
@@ -172,7 +172,7 @@ export default function DashboardPage() {
             ) : (
               dashboardData.upcomingHearings.map((h) => (
                 <div key={h.id} className={styles.listRow}>
-                  <div className={styles.rowIcon} style={{ background: '#dbeafe' }}>
+                  <div className={styles.rowIcon}>
                     ⚖️
                   </div>
                   <div className={styles.rowContent}>
@@ -211,7 +211,7 @@ export default function DashboardPage() {
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #f1f5f9', color: '#64748b', fontWeight: '700' }}>
+                  <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-secondary)', fontWeight: '700' }}>
                     <th style={{ padding: '8px 12px' }}>CASE NUMBER</th>
                     <th style={{ padding: '8px 12px' }}>TITLE</th>
                     <th style={{ padding: '8px 12px' }}>CLIENT</th>
@@ -221,23 +221,13 @@ export default function DashboardPage() {
                 </thead>
                 <tbody>
                   {dashboardData.recentCases?.map((c) => (
-                    <tr key={c.id} style={{ borderBottom: '1px solid #f1f5f9', color: '#334155' }}>
-                      <td style={{ padding: '12px', fontWeight: '700', color: '#0f172a' }}>{c.caseNumber}</td>
+                    <tr key={c.id} style={{ borderBottom: '1px solid var(--border-light)', color: 'var(--text-primary)' }}>
+                      <td style={{ padding: '12px', fontWeight: '700', color: 'var(--text-primary)' }}>{c.caseNumber}</td>
                       <td style={{ padding: '12px' }}>{c.title}</td>
                       <td style={{ padding: '12px' }}>{c.client?.name || 'N/A'}</td>
                       <td style={{ padding: '12px' }}>{c.court || 'High Court'}</td>
                       <td style={{ padding: '12px', textAlign: 'right' }}>
-                        <span
-                          className={`${styles.badge}`}
-                          style={{
-                            background: c.status === 'OPEN' ? '#dcfce7' : '#f1f5f9',
-                            color: c.status === 'OPEN' ? '#16a34a' : '#475569',
-                            padding: '3px 8px',
-                            borderRadius: '12px',
-                            fontSize: '0.72rem',
-                            fontWeight: '600',
-                          }}
-                        >
+                        <span className={`${styles.badge} ${c.status === 'OPEN' ? styles.badgeOpen : styles.badgeClosed}`}>
                           {c.status}
                         </span>
                       </td>

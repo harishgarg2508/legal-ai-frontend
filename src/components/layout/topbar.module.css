@@ -2,10 +2,10 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(248, 250, 252, 0.85);
+  background: rgba(253, 252, 249, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid #e8edf5;
+  border-bottom: 1px solid var(--border);
   padding: 0 28px;
   height: 60px;
   display: flex;
@@ -22,14 +22,14 @@
 .pageTitle {
   font-size: 1rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-primary);
   line-height: 1.2;
   margin: 0;
 }
 
 .pageBreadcrumb {
   font-size: 0.72rem;
-  color: #94a3b8;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -43,8 +43,8 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #fff;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,9 +52,9 @@
   cursor: pointer;
   transition: all 0.15s;
   position: relative;
-  color: #64748b;
+  color: var(--text-secondary);
 }
-.iconBtn:hover { background: #f1f5f9; border-color: #c7d2fe; color: #4f46e5; }
+.iconBtn:hover { background: var(--accent-light); border-color: #c59b6d; color: var(--accent); }
 
 .notifDot {
   position: absolute;
@@ -88,4 +88,10 @@
   .pageBreadcrumb {
     display: none;
   }
+}
+
+.signOutBtn:hover {
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  color: #ef4444 !important;
 }

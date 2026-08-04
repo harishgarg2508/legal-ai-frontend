@@ -28,9 +28,22 @@ export default function AdminSidebar() {
     <aside className={styles.sidebar}>
       {/* Brand */}
       <div className={styles.brand}>
-        <span className={styles.brandIcon}>⚖️</span>
-        <span className={styles.brandName}>Legal AI</span>
-        <span className={styles.brandBadge} style={{ background: '#dc2626' }}>Admin</span>
+        <svg viewBox="0 0 24 24" width="28" height="28" className={styles.shieldSvg}>
+          <path
+            d="M12 2L4 5v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V5l-8-3z"
+            fill="none"
+            stroke="#dc2626"
+            strokeWidth="2"
+          />
+          <path d="M12 6v11M9 9h6M8 12h8M9 15h6" fill="none" stroke="#dc2626" strokeWidth="2" />
+        </svg>
+        <div className={styles.brandText}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <span className={styles.brandName}>LEGARO</span>
+            <span className={styles.brandBadge} style={{ background: '#dc2626' }}>ADMIN</span>
+          </div>
+          <span className={styles.brandSubtitle}>LEGAL INTELLIGENCE</span>
+        </div>
       </div>
 
       {/* Nav */}
@@ -63,7 +76,7 @@ export default function AdminSidebar() {
             <div className={styles.userRole}>Administrator</div>
           </div>
           <button className={styles.signOutBtn} onClick={signOut} title="Sign out">
-            ↩
+            ›
           </button>
         </div>
       </div>
