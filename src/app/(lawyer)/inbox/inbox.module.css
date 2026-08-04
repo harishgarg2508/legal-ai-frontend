@@ -3,7 +3,7 @@
 .inboxWrapper {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 108px);
   background: var(--bg-surface, #ffffff);
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 12px;
@@ -362,4 +362,29 @@
 
 .toastError {
   background: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .inboxWrapper {
+    height: calc(100vh - 80px);
+  }
+  .sidebar {
+    width: 100% !important;
+    min-width: unset !important;
+    border-right: none;
+  }
+  .chatMain {
+    width: 100% !important;
+  }
+  .replyForm {
+    gap: 8px;
+  }
+  .sendBtn {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+  .replyInput {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
 }

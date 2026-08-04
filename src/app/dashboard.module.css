@@ -117,6 +117,7 @@
   font-family: inherit; cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
   box-shadow: 0 2px 12px rgba(99,102,241,0.25);
+  text-decoration: none;
 }
 .primaryBtn:hover { opacity: 0.9; transform: translateY(-1px); }
 
@@ -129,3 +130,71 @@
 .comingSoonIcon { font-size: 3rem; margin-bottom: 4px; }
 .comingSoonTitle { font-size: 1.1rem; font-weight: 700; color: #334155; }
 .comingSoonSub { font-size: 0.85rem; max-width: 300px; line-height: 1.5; }
+
+/* Responsive Tables vs Cards */
+.desktopTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.mobileCards {
+  display: none !important;
+}
+
+.mobileCard {
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.mobileCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 8px;
+}
+.mobileCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mobileCardRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+.mobileCardLabel {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+.mobileCardValue {
+  color: #334155;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .desktopTable {
+    display: none !important;
+  }
+  .mobileCards {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .primaryBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

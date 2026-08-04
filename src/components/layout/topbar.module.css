@@ -64,3 +64,28 @@
   border-radius: 50%;
   border: 1.5px solid white;
 }
+
+.menuBtn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #334155;
+  padding: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 16px;
+    height: 56px;
+  }
+  .menuBtn {
+    display: flex;
+  }
+  .pageBreadcrumb {
+    display: none;
+  }
+}

@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { href: '/dashboard',    icon: '🏠', label: 'Dashboard' },
   { href: '/clients',      icon: '👥', label: 'Clients' },
   { href: '/cases',        icon: '⚖️',  label: 'Cases' },
-  { href: '/inbox',        icon: '💬', label: 'WhatsApp Inbox', badge: true },
+  { href: '/inbox',        icon: '💬', label: 'WhatsApp Inbox' },
   { href: '/documents',    icon: '📄', label: 'Documents' },
   { href: '/hearings',     icon: '📅', label: 'Hearings' },
 ];
@@ -19,7 +19,7 @@ const BOTTOM_ITEMS = [
   { href: '/settings',     icon: '⚙️',  label: 'Settings' },
 ];
 
-export default function LawyerSidebar() {
+export default function LawyerSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const pathname = usePathname();
   const { dbUser, signOut } = useAuth();
 
@@ -33,12 +33,33 @@ export default function LawyerSidebar() {
     .slice(0, 2) ?? '?';
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
       {/* Brand */}
-      <div className={styles.brand}>
-        <span className={styles.brandIcon}>⚖️</span>
-        <span className={styles.brandName}>Legal AI</span>
-        <span className={styles.brandBadge}>Pro</span>
+      <div className={styles.brand} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span className={styles.brandIcon}>⚖️</span>
+          <span className={styles.brandName}>Legal AI</span>
+          <span className={styles.brandBadge}>Pro</span>
+        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+              color: '#64748b',
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            className="mobile-close-toggle"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Nav */}
@@ -48,11 +69,11 @@ export default function LawyerSidebar() {
           <Link
             key={item.href}
             href={item.href}
+            onClick={onClose}
             className={`${styles.navItem} ${isActive(item.href) ? styles.active : ''}`}
           >
             <span className={styles.navIcon}>{item.icon}</span>
             <span className={styles.navLabel}>{item.label}</span>
-            {item.badge && <span className={styles.navBadge}>3</span>}
           </Link>
         ))}
 
@@ -61,6 +82,7 @@ export default function LawyerSidebar() {
           <Link
             key={item.href}
             href={item.href}
+            onClick={onClose}
             className={`${styles.navItem} ${isActive(item.href) ? styles.active : ''}`}
           >
             <span className={styles.navIcon}>{item.icon}</span>

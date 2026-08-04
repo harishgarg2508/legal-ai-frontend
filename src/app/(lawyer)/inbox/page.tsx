@@ -37,13 +37,25 @@ export default function InboxPage() {
   const [sending, setSending] = useState(false);
   const [loadingChats, setLoadingChats] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const streamRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 768);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
   };
+
+  // Keep track of the active selected conversation using a ref for stable callbacks
+  const selectedConversationRef = useRef<Conversation | null>(null);
+  selectedConversationRef.current = selectedConversation;
 
   // ── 1. Fetch Conversations List ─────────────────────────────────────────────
   const fetchConversations = useCallback(async () => {
@@ -57,7 +69,7 @@ export default function InboxPage() {
       if (res.ok) {
         const data: Conversation[] = await res.json();
         setConversations(data);
-        if (data.length > 0 && !selectedConversation) {
+        if (data.length > 0 && !selectedConversationRef.current && window.innerWidth > 768) {
           setSelectedConversation(data[0]);
         }
       }
@@ -66,22 +78,17 @@ export default function InboxPage() {
     } finally {
       setLoadingChats(false);
     }
-  }, [firebaseUser, selectedConversation]);
-
-  useEffect(() => {
-    fetchConversations();
-    const interval = setInterval(fetchConversations, 5000); // refresh every 5s
-    return () => clearInterval(interval);
-  }, [fetchConversations]);
+  }, [firebaseUser]);
 
   // ── 2. Fetch Active Chat Messages History ────────────────────────────────────
   const fetchChatHistory = useCallback(async () => {
-    if (!firebaseUser || !selectedConversation) return;
+    if (!firebaseUser || !selectedConversationRef.current) return;
     try {
       const token = await firebaseUser.getIdToken();
-      const url = selectedConversation.clientId
-        ? `${process.env.NEXT_PUBLIC_API_URL}/messages/chat?clientId=${selectedConversation.clientId}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/messages/chat?phone=${encodeURIComponent(selectedConversation.phone)}`;
+      const active = selectedConversationRef.current;
+      const url = active.clientId
+        ? `${process.env.NEXT_PUBLIC_API_URL}/messages/chat?clientId=${active.clientId}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/messages/chat?phone=${encodeURIComponent(active.phone)}`;
 
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -94,11 +101,26 @@ export default function InboxPage() {
     } catch (e) {
       console.error('Failed to fetch chat history', e);
     }
-  }, [firebaseUser, selectedConversation]);
+  }, [firebaseUser]);
 
+  // Initial load of conversations list
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
+
+  // Load chat history whenever selectedConversation changes
   useEffect(() => {
     fetchChatHistory();
-  }, [fetchChatHistory]);
+  }, [selectedConversation, fetchChatHistory]);
+
+  // Master polling interval for real-time updates (polls both list & active chat every 5s)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchConversations();
+      fetchChatHistory();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [fetchConversations, fetchChatHistory]);
 
   // Auto-scroll chat to bottom
   useEffect(() => {
@@ -164,166 +186,191 @@ export default function InboxPage() {
         </div>
       )}
 
-      <div className={styles.pageHeader}>
-        <div>
-          <h2 className={styles.pageHeading}>WhatsApp Live Inbox</h2>
-          <p className={styles.pageSubheading}>
-            Real-time client conversations & document activity synced with PostgreSQL
-          </p>
-        </div>
-      </div>
-
       <div className={inboxStyles.inboxWrapper}>
         <div className={inboxStyles.splitLayout}>
           {/* Left Panel: Conversation Directory */}
-          <div className={inboxStyles.sidebar}>
-            <div className={inboxStyles.searchBox}>
-              <input
-                type="text"
-                className={inboxStyles.searchInput}
-                placeholder="🔍 Search client or phone..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+          {(!isMobile || !selectedConversation) && (
+            <div className={inboxStyles.sidebar}>
+              <div className={inboxStyles.searchBox}>
+                <input
+                  type="text"
+                  className={inboxStyles.searchInput}
+                  placeholder="🔍 Search client or phone..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
 
-            <div className={inboxStyles.conversationList}>
-              {loadingChats ? (
-                <div className={inboxStyles.emptyState}>Loading conversations...</div>
-              ) : filteredConversations.length === 0 ? (
-                <div className={inboxStyles.emptyState}>No WhatsApp messages found yet.</div>
-              ) : (
-                filteredConversations.map((item, idx) => {
-                  const isSelected =
-                    selectedConversation?.phone === item.phone ||
-                    (selectedConversation?.clientId &&
-                      selectedConversation.clientId === item.clientId);
+              <div className={inboxStyles.conversationList}>
+                {loadingChats ? (
+                  <div className={inboxStyles.emptyState}>Loading conversations...</div>
+                ) : filteredConversations.length === 0 ? (
+                  <div className={inboxStyles.emptyState}>No WhatsApp messages found yet.</div>
+                ) : (
+                  filteredConversations.map((item, idx) => {
+                    const isSelected =
+                      selectedConversation?.phone === item.phone ||
+                      (selectedConversation?.clientId &&
+                        selectedConversation.clientId === item.clientId);
 
-                  return (
-                    <div
-                      key={item.phone || idx}
-                      className={`${inboxStyles.conversationCard} ${
-                        isSelected ? inboxStyles.activeCard : ''
-                      }`}
-                      onClick={() => setSelectedConversation(item)}
-                    >
-                      <div className={inboxStyles.avatar}>
-                        {item.clientName.charAt(0).toUpperCase()}
-                      </div>
-                      <div className={inboxStyles.cardContent}>
-                        <div className={inboxStyles.cardHeader}>
-                          <span className={inboxStyles.clientName}>{item.clientName}</span>
-                          <span className={inboxStyles.timestamp}>
-                            {new Date(item.lastTimestamp).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </span>
+                    return (
+                      <div
+                        key={item.phone || idx}
+                        className={`${inboxStyles.conversationCard} ${
+                          isSelected ? inboxStyles.activeCard : ''
+                        }`}
+                        onClick={() => setSelectedConversation(item)}
+                      >
+                        <div className={inboxStyles.avatar}>
+                          {item.clientName.charAt(0).toUpperCase()}
                         </div>
-                        <p className={inboxStyles.lastMessage}>
-                          {item.direction === 'OUTBOUND' ? 'You: ' : ''}
-                          {item.lastMessage}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-
-          {/* Center Panel: Active Chat Stream */}
-          <div className={inboxStyles.chatMain}>
-            {selectedConversation ? (
-              <>
-                <div className={inboxStyles.chatHeader}>
-                  <div className={inboxStyles.activeClientInfo}>
-                    <div className={inboxStyles.avatar}>
-                      {selectedConversation.clientName.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <div className={inboxStyles.activeName}>
-                        {selectedConversation.clientName}
-                      </div>
-                      <div className={inboxStyles.activePhone}>{selectedConversation.phone}</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={inboxStyles.chatStream} ref={streamRef}>
-                  {messages.length === 0 ? (
-                    <div className={inboxStyles.emptyState}>No history with this client.</div>
-                  ) : (
-                    messages.map((msg) => {
-                      const isOutbound = msg.direction === 'OUTBOUND';
-                      return (
-                        <div
-                          key={msg.id}
-                          className={`${inboxStyles.bubble} ${
-                            isOutbound ? inboxStyles.outbound : inboxStyles.inbound
-                          }`}
-                        >
-                          <div>{msg.text}</div>
-
-                          {/* Render media attachments / downloads */}
-                          {msg.mediaId && (
-                            <div className={inboxStyles.mediaCard}>
-                              <span>📎 [{msg.type.toUpperCase()}] Attachment</span>
-                              <a
-                                href={`${process.env.NEXT_PUBLIC_API_URL}/media/download?mediaId=${msg.mediaId}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={inboxStyles.mediaDownloadBtn}
-                              >
-                                Download
-                              </a>
-                            </div>
-                          )}
-
-                          <div className={inboxStyles.bubbleMeta}>
-                            <span>
-                              {new Date(msg.createdAt).toLocaleTimeString([], {
+                        <div className={inboxStyles.cardContent}>
+                          <div className={inboxStyles.cardHeader}>
+                            <span className={inboxStyles.clientName}>{item.clientName}</span>
+                            <span className={inboxStyles.timestamp}>
+                              {new Date(item.lastTimestamp).toLocaleTimeString([], {
                                 hour: '2-digit',
                                 minute: '2-digit',
                               })}
                             </span>
-                            {isOutbound && <span>✓✓</span>}
                           </div>
+                          <p className={inboxStyles.lastMessage}>
+                            {item.direction === 'OUTBOUND' ? 'You: ' : ''}
+                            {item.lastMessage}
+                          </p>
                         </div>
-                      );
-                    })
-                  )}
-                </div>
-
-                {/* Reply Input Bar */}
-                <div className={inboxStyles.replyContainer}>
-                  <div className={inboxStyles.replyForm}>
-                    <textarea
-                      className={inboxStyles.replyInput}
-                      placeholder={`Type reply to ${selectedConversation.clientName}... (Ctrl + Enter to send)`}
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      rows={2}
-                      disabled={sending}
-                    />
-                    <button
-                      className={inboxStyles.sendBtn}
-                      onClick={handleSendReply}
-                      disabled={!replyText.trim() || sending}
-                    >
-                      {sending ? 'Sending...' : '➤ Send'}
-                    </button>
-                  </div>
-                  <div className={inboxStyles.keyboardHint}>Press Ctrl + Enter to send reply</div>
-                </div>
-              </>
-            ) : (
-              <div className={inboxStyles.emptyState} style={{ marginTop: 'auto', marginBottom: 'auto' }}>
-                Select a conversation from the sidebar to view chat history.
+                      </div>
+                    );
+                  })
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* Center Panel: Active Chat Stream */}
+          {(!isMobile || selectedConversation) && (
+            <div className={inboxStyles.chatMain}>
+              {selectedConversation ? (
+                <>
+                  <div className={inboxStyles.chatHeader}>
+                    <div className={inboxStyles.activeClientInfo}>
+                      {isMobile && (
+                        <button
+                          onClick={() => setSelectedConversation(null)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            fontSize: '1.4rem',
+                            marginRight: '8px',
+                            cursor: 'pointer',
+                            color: '#2563eb',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '4px 8px 4px 0',
+                          }}
+                        >
+                          ←
+                        </button>
+                      )}
+                      <div className={inboxStyles.avatar}>
+                        {selectedConversation.clientName.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className={inboxStyles.activeName}>
+                          {selectedConversation.clientName}
+                        </div>
+                        <div className={inboxStyles.activePhone}>{selectedConversation.phone}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={inboxStyles.chatStream} ref={streamRef}>
+                    {messages.length === 0 ? (
+                      <div className={inboxStyles.emptyState}>No history with this client.</div>
+                    ) : (
+                      messages.map((msg) => {
+                        const isOutbound = msg.direction === 'OUTBOUND';
+                        return (
+                          <div
+                            key={msg.id}
+                            className={`${inboxStyles.bubble} ${
+                              isOutbound ? inboxStyles.outbound : inboxStyles.inbound
+                            }`}
+                          >
+                            <div>{msg.text}</div>
+
+                             {/* Render media attachments / downloads */}
+                            {(msg.mediaId || msg.mediaUrl) && (
+                              <div className={inboxStyles.mediaCard}>
+                                <span>📎 [{msg.type.toUpperCase()}] Attachment</span>
+                                {msg.mediaUrl ? (
+                                  <a
+                                    href={msg.mediaUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={inboxStyles.mediaDownloadBtn}
+                                  >
+                                    {msg.mediaUrl.includes('drive.google.com') ? 'View in Drive' : 'Download'}
+                                  </a>
+                                ) : (
+                                  <a
+                                    href={`${process.env.NEXT_PUBLIC_API_URL}/media/download?mediaId=${msg.mediaId}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={inboxStyles.mediaDownloadBtn}
+                                  >
+                                    Download
+                                  </a>
+                                )}
+                              </div>
+                            )}
+
+                            <div className={inboxStyles.bubbleMeta}>
+                              <span>
+                                {new Date(msg.createdAt).toLocaleTimeString([], {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })}
+                              </span>
+                              {isOutbound && <span>✓✓</span>}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Reply Input Bar */}
+                  <div className={inboxStyles.replyContainer}>
+                    <div className={inboxStyles.replyForm}>
+                      <textarea
+                        className={inboxStyles.replyInput}
+                        placeholder={`Type reply to ${selectedConversation.clientName}...${isMobile ? '' : ' (Ctrl + Enter to send)'}`}
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        rows={2}
+                        disabled={sending}
+                      />
+                      <button
+                        className={inboxStyles.sendBtn}
+                        onClick={handleSendReply}
+                        disabled={!replyText.trim() || sending}
+                      >
+                        {sending ? 'Sending...' : '➤ Send'}
+                      </button>
+                    </div>
+                    {!isMobile && <div className={inboxStyles.keyboardHint}>Press Ctrl + Enter to send reply</div>}
+                  </div>
+                </>
+              ) : (
+                <div className={inboxStyles.emptyState} style={{ marginTop: 'auto', marginBottom: 'auto' }}>
+                  Select a conversation from the sidebar to view chat history.
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

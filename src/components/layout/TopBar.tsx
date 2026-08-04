@@ -17,17 +17,27 @@ const ROUTE_TITLES: Record<string, { title: string; breadcrumb: string }> = {
   '/admin/audit-logs': { title: 'Audit Logs',       breadcrumb: 'Admin / Audit Logs' },
 };
 
-export default function TopBar() {
+export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const pathname = usePathname();
   const meta = ROUTE_TITLES[pathname] ?? { title: 'Legal AI', breadcrumb: '' };
 
   return (
     <header className={styles.topbar}>
-      <div className={styles.left}>
-        <h1 className={styles.pageTitle}>{meta.title}</h1>
-        {meta.breadcrumb && (
-          <p className={styles.pageBreadcrumb}>{meta.breadcrumb}</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className={styles.menuBtn}
+          >
+            ☰
+          </button>
         )}
+        <div className={styles.left}>
+          <h1 className={styles.pageTitle}>{meta.title}</h1>
+          {meta.breadcrumb && (
+            <p className={styles.pageBreadcrumb}>{meta.breadcrumb}</p>
+          )}
+        </div>
       </div>
       <div className={styles.right}>
         <button className={styles.iconBtn} title="Notifications">

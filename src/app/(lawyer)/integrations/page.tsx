@@ -302,10 +302,11 @@ function SheetsConfigModal({
   const [mapping, setMapping] = useState({
     case_number: initialMapping?.case_number || 'A',
     client_name: initialMapping?.client_name || 'B',
+    client_phone: initialMapping?.client_phone || 'C',
     client_email: initialMapping?.client_email || 'E',
-    court: initialMapping?.court || 'C',
-    hearing_date: initialMapping?.hearing_date || 'D',
-    status: initialMapping?.status || 'F',
+    court: initialMapping?.court || 'D',
+    hearing_date: initialMapping?.hearing_date || 'F',
+    status: initialMapping?.status || 'G',
   });
 
   const fetchSheetDetails = useCallback(async (targetUrl?: string, targetTab?: string) => {
@@ -369,10 +370,11 @@ function SheetsConfigModal({
           setMapping({
             case_number: initialMapping.case_number || 'A',
             client_name: initialMapping.client_name || 'B',
+            client_phone: initialMapping.client_phone || 'C',
             client_email: initialMapping.client_email || 'E',
-            court: initialMapping.court || 'C',
-            hearing_date: initialMapping.hearing_date || 'D',
-            status: initialMapping.status || 'F',
+            court: initialMapping.court || 'D',
+            hearing_date: initialMapping.hearing_date || 'F',
+            status: initialMapping.status || 'G',
           });
         }
         if (initId) {
@@ -524,6 +526,19 @@ function SheetsConfigModal({
                 >
                   {columnOptions.map((opt) => (
                     <option key={`cl-${opt.col}`} value={opt.col}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className={intStyles.inputLabel}>Client Phone Column</label>
+                <select
+                  className={intStyles.inputField}
+                  value={mapping.client_phone}
+                  onChange={(e) => setMapping({ ...mapping, client_phone: e.target.value })}
+                >
+                  {columnOptions.map((opt) => (
+                    <option key={`cp-${opt.col}`} value={opt.col}>{opt.label}</option>
                   ))}
                 </select>
               </div>
