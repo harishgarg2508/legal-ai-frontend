@@ -1,0 +1,161 @@
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  width: 240px;
+  background: #fff;
+  border-right: 1px solid #e8edf5;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: width 0.2s ease;
+}
+
+/* ── Brand ─────────────────────────────────────────────────────── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid #f0f4fa;
+}
+.brandIcon { font-size: 1.5rem; line-height: 1; }
+.brandName {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  letter-spacing: -0.3px;
+}
+.brandBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ── Nav ────────────────────────────────────────────────────────── */
+.nav {
+  flex: 1;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.navSection {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 8px 10px 4px;
+  margin-top: 4px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+.navItem:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+.navItem.active {
+  background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+  color: #4f46e5;
+  font-weight: 600;
+}
+.navItem.active .navIcon { filter: none; }
+.navIcon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+.navLabel { flex: 1; }
+.navBadge {
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* ── User Footer ────────────────────────────────────────────────── */
+.userFooter {
+  padding: 12px;
+  border-top: 1px solid #f0f4fa;
+}
+.userCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.userCard:hover { background: #f1f5f9; }
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.userInfo { flex: 1; min-width: 0; }
+.userName {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.userRole {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: capitalize;
+}
+.signOutBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+.signOutBtn:hover { color: #ef4444; background: #fef2f2; }
+
+/* ── Main content area ──────────────────────────────────────────── */
+.main {
+  margin-left: 240px;
+  min-height: 100vh;
+  background: #f8fafc;
+}

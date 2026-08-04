@@ -1,0 +1,121 @@
+/* ─── Reply Panel ─────────────────────────────────────────────── */
+.reply-panel {
+  margin: 0 1.5rem 1.2rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  animation: expandDown 0.22s ease-out;
+}
+
+.reply-panel-header {
+  background: #f8faff;
+  border-bottom: 1px solid var(--border-light);
+  padding: 8px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reply-panel-body {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  align-items: flex-end;
+}
+
+.reply-input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  outline: none;
+  resize: none;
+  min-height: 38px;
+  max-height: 120px;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+
+.reply-input:focus {
+  border-color: var(--accent);
+  background: var(--bg-secondary);
+}
+
+.reply-input::placeholder {
+  color: var(--text-muted);
+}
+
+.reply-send-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  white-space: nowrap;
+  height: 38px;
+}
+
+.reply-send-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.reply-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.reply-feedback {
+  padding: 6px 14px 10px 14px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.reply-feedback.success { color: var(--badge-received-text); }
+.reply-feedback.error   { color: #dc2626; }
+
+.reply-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.reply-btn:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.reply-btn.active {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
