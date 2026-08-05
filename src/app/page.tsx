@@ -46,13 +46,8 @@ export default function LoginPage() {
     }
   };
 
-  if (authLoading || dbUser) {
-    return (
-      <div className={styles.pageLoader} style={{ background: '#f7f5f0' }}>
-        <div className={styles.spinner} />
-      </div>
-    );
-  }
+  // Do not block initial HTML render with a loader, so search engines and OAuth reviewers see full branding.
+  // We handle redirection silently client-side in the useEffect above.
 
   return (
     <div className={styles.page} style={{
