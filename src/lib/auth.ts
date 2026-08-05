@@ -77,6 +77,8 @@ export const syncUserWithBackend = async (user: User) => {
       attempts++;
       const res = await fetch(`${apiUrl}/auth/sync`, {
         method: 'POST',
+        mode: 'cors',
+        credentials: 'omit',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
