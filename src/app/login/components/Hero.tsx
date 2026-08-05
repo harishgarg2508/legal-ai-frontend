@@ -42,9 +42,8 @@ export default function Hero() {
       </div>
 
       {/* Subheading */}
-      <p className={styles.subtitle}>
-        Manage clients, cases, documents, and every legal workflow <br />
-        from one intelligent platform.
+      <p className={styles.subtitle} style={{ maxWidth: '780px', margin: '0 auto', lineHeight: '1.6' }}>
+        Legaro AI is an intelligent legal practice platform built for law firms and legal professionals to automate case management, secure document storage in Google Drive, and sync court schedules with Google Calendar.
       </p>
     </section>
   );

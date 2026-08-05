@@ -6,10 +6,13 @@ import { useAuth } from '@/context/AuthContext';
 import { signInWithGoogle } from '@/lib/auth';
 import styles from './login/login.module.css';
 
-// Components from login folder
+// Component Imports
 import Header from './login/components/Header';
 import Hero from './login/components/Hero';
 import VideoPlayer from './login/components/VideoPlayer';
+import ServicesSection from './login/components/ServicesSection';
+import ReviewsSection from './login/components/ReviewsSection';
+import SecuritySection from './login/components/SecuritySection';
 import Footer from './login/components/Footer';
 
 export default function LoginPage() {
@@ -46,15 +49,14 @@ export default function LoginPage() {
     }
   };
 
-  // Do not block initial HTML render with a loader, so search engines and OAuth reviewers see full branding.
-  // We handle redirection silently client-side in the useEffect above.
-
   return (
     <div className={styles.page} style={{
       background: 'linear-gradient(180deg, #f7f5f0 0%, #ede8de 100%)',
-      color: '#2c1e15'
+      color: '#2c1e15',
+      minHeight: '100vh',
+      fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
     }}>
-      {/* Decorative Background Glows */}
+      {/* Background Decorative Glows */}
       <div className={styles.glowTop} style={{
         background: 'radial-gradient(circle, rgba(217, 119, 6, 0.06) 0%, transparent 70%)'
       }} />
@@ -62,16 +64,17 @@ export default function LoginPage() {
         background: 'radial-gradient(circle, rgba(98, 62, 35, 0.03) 0%, transparent 60%)'
       }} />
 
-      {/* Header containing Logo & Login Trigger */}
+      {/* 1. Header Navigation */}
       <Header onLogin={handleSignIn} loading={loading} />
 
-      {/* Main Landing/Login Page Content */}
-      <div className={styles.content} style={{ maxWidth: '1320px', width: '100%', padding: '40px 4vw 80px' }}>
-        {/* Hero Section */}
+      {/* Main Page Layout Container */}
+      <div className={styles.content} style={{ maxWidth: '1320px', width: '100%', padding: '40px 4vw 80px', margin: '0 auto' }}>
+        
+        {/* 2. Hero Section */}
         <Hero />
 
-        {/* Get Started CTA Button */}
-        <div className={styles.ctaWrapper} style={{ marginBottom: '40px' }}>
+        {/* Primary Call to Action */}
+        <div className={styles.ctaWrapper} style={{ marginBottom: '50px' }}>
           <button className={styles.ctaBtn} onClick={handleSignIn} disabled={loading}>
             {loading ? (
               <span className={styles.ctaSpinner} />
@@ -81,262 +84,29 @@ export default function LoginPage() {
               </>
             )}
           </button>
+          <p style={{ color: '#8c786a', fontSize: '0.8rem', marginTop: '10px' }}>
+            No credit card required • Instant setup with Google Workspace
+          </p>
         </div>
 
-        {/* Video Player Section */}
+        {/* Product Video & Interactive Showcase */}
         <VideoPlayer />
 
-        {/* What We Do & Services Grid */}
-        <section style={{
-          width: '100%',
-          margin: '80px auto 40px',
-          textAlign: 'center'
-        }}>
-          <span style={{
-            fontSize: '0.75rem',
-            fontWeight: '700',
-            letterSpacing: '1.5px',
-            color: '#d97706',
-            textTransform: 'uppercase',
-            display: 'block',
-            marginBottom: '12px'
-          }}>
-            INTELLIGENT WORKFLOWS
-          </span>
-          <h2 style={{
-            fontSize: '2rem',
-            fontWeight: '800',
-            color: '#2c1e15',
-            marginBottom: '14px',
-            fontFamily: 'inherit'
-          }}>
-            What Legaro AI Does
-          </h2>
-          <p style={{
-            color: '#625043',
-            fontSize: '0.92rem',
-            lineHeight: '1.6',
-            marginBottom: '50px',
-            maxWidth: '700px',
-            margin: '0 auto 50px'
-          }}>
-            Legaro AI is a secure legal operating platform designed for law firms to automate document filing, client communications, and court schedules. Here are the core services we provide:
-          </p>
+        {/* 3. Core Services & Google Integrations Section */}
+        <ServicesSection />
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-            gap: '20px',
-            textAlign: 'left'
-          }}>
-            {/* Service 1: Google Drive */}
-            <div style={{
-              background: '#ffffff',
-              border: '1px solid #e2dcd0',
-              padding: '24px',
-              borderRadius: '12px',
-              boxShadow: '0 10px 30px rgba(98, 62, 35, 0.04)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
-              <div>
-                <div style={{
-                  fontSize: '1.4rem',
-                  width: '40px',
-                  height: '40px',
-                  background: 'rgba(217, 119, 6, 0.06)',
-                  border: '1px solid rgba(217, 119, 6, 0.15)',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '16px'
-                }}>📁</div>
-                <h4 style={{ color: '#2c1e15', fontSize: '1rem', fontWeight: '700', marginBottom: '10px' }}>
-                  Google Drive Folder Organizer
-                </h4>
-                <p style={{ color: '#625043', fontSize: '0.8rem', lineHeight: '1.6' }}>
-                  Automates case-specific folder creation under a structured `Legaro AI` root. Automatically files documents by Client and Case name, ensuring your files are organized without manual dragging and dropping.
-                </p>
-              </div>
-            </div>
+        {/* 4. Verified Reviews & Testimonials Section */}
+        <ReviewsSection />
 
-            {/* Service 2: Google Calendar */}
-            <div style={{
-              background: '#ffffff',
-              border: '1px solid #e2dcd0',
-              padding: '24px',
-              borderRadius: '12px',
-              boxShadow: '0 10px 30px rgba(98, 62, 35, 0.04)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
-              <div>
-                <div style={{
-                  fontSize: '1.4rem',
-                  width: '40px',
-                  height: '40px',
-                  background: 'rgba(217, 119, 6, 0.06)',
-                  border: '1px solid rgba(217, 119, 6, 0.15)',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '16px'
-                }}>📅</div>
-                <h4 style={{ color: '#2c1e15', fontSize: '1rem', fontWeight: '700', marginBottom: '10px' }}>
-                  Google Calendar Sync
-                </h4>
-                <p style={{ color: '#625043', fontSize: '0.8rem', lineHeight: '1.6' }}>
-                  AI analyzes uploaded court notices, extracts hearing dates, locations, and judge names, and adds them directly as events in your Google Calendar with custom reminders.
-                </p>
-              </div>
-            </div>
+        {/* 5. Security & Data Policy Compliance Section */}
+        <SecuritySection />
 
-            {/* Service 3: WhatsApp Intake */}
-            <div style={{
-              background: '#ffffff',
-              border: '1px solid #e2dcd0',
-              padding: '24px',
-              borderRadius: '12px',
-              boxShadow: '0 10px 30px rgba(98, 62, 35, 0.04)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
-              <div>
-                <div style={{
-                  fontSize: '1.4rem',
-                  width: '40px',
-                  height: '40px',
-                  background: 'rgba(217, 119, 6, 0.06)',
-                  border: '1px solid rgba(217, 119, 6, 0.15)',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '16px'
-                }}>💬</div>
-                <h4 style={{ color: '#2c1e15', fontSize: '1rem', fontWeight: '700', marginBottom: '10px' }}>
-                  WhatsApp Document Intake
-                </h4>
-                <p style={{ color: '#625043', fontSize: '0.8rem', lineHeight: '1.6' }}>
-                  Connect your custom WhatsApp number. Clients can send case documents, photos, or text messages. The platform automatically files the attachments under the correct case in Google Drive.
-                </p>
-              </div>
-            </div>
-
-            {/* Service 4: Gmail Automation */}
-            <div style={{
-              background: '#ffffff',
-              border: '1px solid #e2dcd0',
-              padding: '24px',
-              borderRadius: '12px',
-              boxShadow: '0 10px 30px rgba(98, 62, 35, 0.04)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
-              <div>
-                <div style={{
-                  fontSize: '1.4rem',
-                  width: '40px',
-                  height: '40px',
-                  background: 'rgba(217, 119, 6, 0.06)',
-                  border: '1px solid rgba(217, 119, 6, 0.15)',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '16px'
-                }}>📧</div>
-                <h4 style={{ color: '#2c1e15', fontSize: '1rem', fontWeight: '700', marginBottom: '10px' }}>
-                  Gmail Intake Automation
-                </h4>
-                <p style={{ color: '#625043', fontSize: '0.8rem', lineHeight: '1.6' }}>
-                  Monitors incoming emails from clients or courts. Automatically extracts attachments, matches them to existing client files, and uploads them to Drive case folders.
-                </p>
-              </div>
-            </div>
-
-            {/* Service 5: Google Sheets */}
-            <div style={{
-              background: '#ffffff',
-              border: '1px solid #e2dcd0',
-              padding: '24px',
-              borderRadius: '12px',
-              boxShadow: '0 10px 30px rgba(98, 62, 35, 0.04)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
-              <div>
-                <div style={{
-                  fontSize: '1.4rem',
-                  width: '40px',
-                  height: '40px',
-                  background: 'rgba(217, 119, 6, 0.06)',
-                  border: '1px solid rgba(217, 119, 6, 0.15)',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '16px'
-                }}>📊</div>
-                <h4 style={{ color: '#2c1e15', fontSize: '1rem', fontWeight: '700', marginBottom: '10px' }}>
-                  Google Sheets Sync
-                </h4>
-                <p style={{ color: '#625043', fontSize: '0.8rem', lineHeight: '1.6' }}>
-                  Import client rosters and case details from Google Sheets. Keep records synced dynamically between your Legaro dashboard and the spreadsheet.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Transparent Google API Use Card */}
-        <section style={{
-          width: '100%',
-          background: '#ffffff',
-          border: '1px solid #e2dcd0',
-          padding: '30px',
-          borderRadius: '12px',
-          margin: '30px 0 20px',
-          textAlign: 'left',
-          boxShadow: '0 10px 30px rgba(98, 62, 35, 0.04)'
-        }}>
-          <h3 style={{
-            color: '#2c1e15',
-            fontSize: '1.1rem',
-            fontWeight: '700',
-            marginBottom: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            🔒 Transparency & Google API Usage
-          </h3>
-          <p style={{
-            color: '#625043',
-            fontSize: '0.85rem',
-            lineHeight: '1.6',
-            margin: 0
-          }}>
-            Legaro AI integrates directly with your Google Workspace credentials to organize files and schedule dates. 
-            We comply fully with the <a href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes" target="_blank" rel="noopener noreferrer" style={{ color: '#d97706', fontWeight: '600' }}>Google API Services User Data Policy</a>. 
-            We access <strong>Google Drive</strong> exclusively to build case directories and upload client documents. 
-            We access <strong>Google Calendar</strong> to programmatically save hearing schedules. 
-            Your tokens are encrypted with AES-256-GCM. We never share or sell Google user data to third parties.
-          </p>
-        </section>
       </div>
 
-      {/* Full-width dark footer component below */}
+      {/* 6. Footer Component */}
       <Footer />
 
-      {/* Floating Error Notification Toast */}
+      {/* Error Toast Notification */}
       {errorMsg && (
         <div className={styles.errorToast}>
           <span>⚠️ {errorMsg}</span>
