@@ -80,7 +80,7 @@ export const syncUserWithBackend = async (user: User) => {
     } catch (error: any) {
       console.error(`syncUserWithBackend Attempt ${attempts}/${maxAttempts} failed:`, error);
       if (attempts >= maxAttempts) {
-        throw new Error(`Failed to fetch from backend (${apiUrl}). Network or CORS issue on mobile device.`);
+        throw new Error(`Mobile Fetch Error (${apiUrl}): ${error?.name || 'Error'} — ${error?.message || String(error)}`);
       }
       // Wait 600ms before retrying on mobile network glitch
       await new Promise((res) => setTimeout(res, 600));
