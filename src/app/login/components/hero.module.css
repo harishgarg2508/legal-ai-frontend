@@ -24,14 +24,14 @@
   font-size: clamp(1.6rem, 4.4vh, 2.8rem);
   font-weight: 800;
   line-height: 1.15;
-  color: #ffffff;
+  color: #2c1e15;
   letter-spacing: -0.5px;
   margin: 0 0 0.4vh;
   font-family: inherit;
 }
 
 .highlight {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #d97706, #a27c54);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -58,7 +58,7 @@
 .subtitle {
   font-size: clamp(0.68rem, 1.4vh, 0.85rem);
   line-height: 1.4;
-  color: #94a3b8;
+  color: #4b3b30;
   max-width: 600px;
   margin: 0;
 }
