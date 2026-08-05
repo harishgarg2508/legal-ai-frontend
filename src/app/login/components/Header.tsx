@@ -30,7 +30,7 @@ export default function Header({ onLogin, loading }: HeaderProps) {
           </svg>
         </div>
         <div className={styles.brandText}>
-          <span className={styles.brandName}>LEGARO</span>
+          <span className={styles.brandName}>LEGARO AI</span>
           <span className={styles.brandSubtitle}>LEGAL INTELLIGENCE PLATFORM</span>
         </div>
       </div>
