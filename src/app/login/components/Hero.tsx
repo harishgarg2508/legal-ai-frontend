@@ -8,10 +8,21 @@ export default function Hero() {
       {/* Small top tagline */}
       <span className={styles.tagline}>AI-POWERED. LAWYER-TRUSTED.</span>
 
-      {/* Main heading */}
-      <h1 className={styles.title}>
-        The AI Operating System for <span className={styles.highlight}>Modern</span> Law Firms
+      {/* Main heading representing the App Name */}
+      <h1 className={styles.title} style={{ fontSize: 'clamp(2rem, 5vh, 3.8rem)', fontWeight: '900', color: '#2c1e15' }}>
+        Legaro AI
       </h1>
+      <p style={{
+        fontSize: 'clamp(0.9rem, 1.8vh, 1.25rem)',
+        fontWeight: '600',
+        color: '#d97706',
+        marginTop: '8px',
+        marginBottom: '20px',
+        textTransform: 'uppercase',
+        letterSpacing: '1px'
+      }}>
+        The AI Operating System for Modern Law Firms
+      </p>
 
       {/* Golden shield divider decoration */}
       <div className={styles.divider}>
