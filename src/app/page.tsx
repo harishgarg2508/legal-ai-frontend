@@ -162,7 +162,7 @@ export default function LoginPage() {
                   Google Drive Folder Organizer
                 </h4>
                 <p style={{ color: '#625043', fontSize: '0.8rem', lineHeight: '1.6' }}>
-                  Automates case-specific folder creation under a structured `Legal AI` root. Automatically files documents by Client and Case name, ensuring your files are organized without manual dragging and dropping.
+                  Automates case-specific folder creation under a structured `Legaro AI` root. Automatically files documents by Client and Case name, ensuring your files are organized without manual dragging and dropping.
                 </p>
               </div>
             </div>

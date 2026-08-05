@@ -6,7 +6,7 @@ import { AuthProvider } from '@/context/AuthContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Legal AI — Intelligent Legal Practice Assistant',
+  title: 'Legaro AI — Intelligent Legal Practice Assistant',
   description:
     'Manage clients, cases, WhatsApp conversations, and documents with AI-powered automation.',
 };

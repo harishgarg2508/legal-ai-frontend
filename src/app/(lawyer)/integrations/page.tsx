@@ -40,7 +40,7 @@ const INTEGRATIONS = [
     key: 'drive' as const,
     icon: '📁',
     name: 'Google Drive',
-    desc: 'Your Drive, organized by Legal AI. Client → Case → Document folder structure, auto-created.',
+    desc: 'Your Drive, organized by Legaro AI. Client → Case → Document folder structure, auto-created.',
     color: '#dbeafe',
     iconColor: '#2563eb',
     manualConnect: false,
