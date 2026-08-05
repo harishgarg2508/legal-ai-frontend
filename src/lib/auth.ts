@@ -52,22 +52,28 @@ export const handleRedirectResult = async (): Promise<User | null> => {
  * Sends POST /api/v1/auth/sync with Firebase ID token.
  */
 export const syncUserWithBackend = async (user: User) => {
-  const idToken = await user.getIdToken();
+  // Force refresh token to prevent expired/skewed token errors on mobile browsers
+  const idToken = await user.getIdToken(true);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
 
-  const res = await fetch(`${apiUrl}/auth/sync`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ idToken }),
-  });
+  try {
+    const res = await fetch(`${apiUrl}/auth/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken }),
+    });
 
-  if (!res.ok) {
-    const errText = await res.text();
-    console.error('Sync HTTP Error:', res.status, errText);
-    throw new Error(`Failed to sync user: ${res.status}`);
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Sync HTTP Error:', res.status, errText);
+      throw new Error(`Backend Sync (${res.status}): ${errText || res.statusText}`);
+    }
+
+    return res.json();
+  } catch (error: any) {
+    console.error('syncUserWithBackend Exception:', error);
+    throw error;
   }
-
-  return res.json();
 };
 
 /**

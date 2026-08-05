@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return synced;
     } catch (e) {
       console.error('Backend sync failed:', e);
-      return null;
+      throw e;
     }
   }, []);
 
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     handleRedirectResult().then(async (user) => {
       if (user) {
-        await syncCurrentDbUser(user);
+        await syncCurrentDbUser(user).catch((err) => console.warn('Redirect sync error:', err));
       }
     });
   }, [syncCurrentDbUser]);
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setFirebaseUser(user);
 
       if (user) {
-        await syncCurrentDbUser(user);
+        await syncCurrentDbUser(user).catch((err) => console.warn('Auth state sync error:', err));
       } else {
         setDbUser(null);
       }

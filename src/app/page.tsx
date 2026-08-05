@@ -34,11 +34,17 @@ export default function LoginPage() {
     try {
       const user = await signInWithGoogle();
       if (user) {
-        const synced = await syncCurrentDbUser(user);
-        if (synced) {
-          router.replace(synced.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard');
-        } else {
-          setErrorMsg('Signed in to Google, but backend user sync failed. Check backend logs.');
+        try {
+          const synced = await syncCurrentDbUser(user);
+          if (synced) {
+            router.replace(synced.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard');
+          } else {
+            setErrorMsg('Signed in to Google, but backend sync failed. Please check network connection.');
+            setLoading(false);
+          }
+        } catch (syncErr: any) {
+          console.error('Backend sync error:', syncErr);
+          setErrorMsg(syncErr.message || 'Signed in to Google, but backend user sync failed.');
           setLoading(false);
         }
       }
