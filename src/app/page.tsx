@@ -16,7 +16,7 @@ import SecuritySection from './login/components/SecuritySection';
 import Footer from './login/components/Footer';
 
 export default function LoginPage() {
-  const { dbUser, loading: authLoading, syncCurrentDbUser } = useAuth();
+  const { dbUser, loading: authLoading, authError, clearAuthError, syncCurrentDbUser } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -31,6 +31,7 @@ export default function LoginPage() {
   const handleSignIn = async () => {
     setLoading(true);
     setErrorMsg(null);
+    clearAuthError();
     try {
       const user = await signInWithGoogle();
       if (user) {
@@ -39,21 +40,25 @@ export default function LoginPage() {
           if (synced) {
             router.replace(synced.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard');
           } else {
-            setErrorMsg('Signed in to Google, but backend sync failed. Please check network connection.');
+            setErrorMsg(`Signed in to Google, but backend user sync returned null.\nTarget API: ${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}`);
             setLoading(false);
           }
         } catch (syncErr: any) {
           console.error('Backend sync error:', syncErr);
-          setErrorMsg(syncErr.message || 'Signed in to Google, but backend user sync failed.');
+          const fullErr = `Backend Sync Exception:\nName: ${syncErr?.name || 'Error'}\nMessage: ${syncErr?.message || String(syncErr)}\nCode: ${syncErr?.code || 'N/A'}\nAPI URL: ${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}`;
+          setErrorMsg(fullErr);
           setLoading(false);
         }
       }
     } catch (error: any) {
       console.error('Sign-in error:', error);
-      setErrorMsg(error.message || 'Sign-in failed. Please try again.');
+      const fullErr = `Google Sign-in Exception:\nName: ${error?.name || 'Error'}\nMessage: ${error?.message || String(error)}\nCode: ${error?.code || 'N/A'}`;
+      setErrorMsg(fullErr);
       setLoading(false);
     }
   };
+
+  const activeError = errorMsg || authError;
 
   return (
     <div className={styles.page} style={{
@@ -112,13 +117,48 @@ export default function LoginPage() {
       {/* 6. Footer Component */}
       <Footer />
 
-      {/* Error Toast Notification */}
-      {errorMsg && (
-        <div className={styles.errorToast}>
-          <span>⚠️ {errorMsg}</span>
-          <button className={styles.errorClose} onClick={() => setErrorMsg(null)}>
-            ✕
-          </button>
+      {/* Full On-Screen Debug Error Overlay for Mobile Debugging */}
+      {activeError && (
+        <div style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '92%',
+          maxWidth: '720px',
+          backgroundColor: '#0f172a',
+          border: '2px solid #ef4444',
+          borderRadius: '14px',
+          padding: '18px 20px',
+          color: '#fca5a5',
+          zIndex: 9999999,
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.75)',
+          fontSize: '0.85rem',
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+          wordBreak: 'break-word',
+          whiteSpace: 'pre-wrap',
+          maxHeight: '70vh',
+          overflowY: 'auto'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', borderBottom: '1px solid #334155', paddingBottom: '8px' }}>
+            <span style={{ fontWeight: '800', color: '#f87171', fontSize: '0.95rem' }}>🚨 AUTH DEBUG LOG (MOBILE DETAILS)</span>
+            <button
+              onClick={() => { setErrorMsg(null); clearAuthError(); }}
+              style={{
+                background: '#ef4444',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '6px 12px',
+                cursor: 'pointer',
+                fontWeight: '700',
+                fontSize: '0.78rem'
+              }}
+            >
+              DISMISS
+            </button>
+          </div>
+          <div style={{ lineHeight: '1.6' }}>{activeError}</div>
         </div>
       )}
     </div>

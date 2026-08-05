@@ -21,6 +21,8 @@ interface AuthContextValue {
   firebaseUser: User | null;
   dbUser: DbUser | null;
   loading: boolean;
+  authError: string | null;
+  clearAuthError: () => void;
   signOut: () => Promise<void>;
   syncCurrentDbUser: (user: User) => Promise<DbUser | null>;
 }
@@ -30,15 +32,21 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const [dbUser, setDbUser] = useState<DbUser | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const clearAuthError = useCallback(() => setAuthError(null), []);
 
   const syncCurrentDbUser = useCallback(async (user: User): Promise<DbUser | null> => {
     try {
       const synced = await syncUserWithBackend(user);
       setDbUser(synced);
+      setAuthError(null);
       return synced;
-    } catch (e) {
-      console.error('Backend sync failed:', e);
+    } catch (e: any) {
+      const fullError = `Auth Error: ${e?.name || 'Error'} — ${e?.message || String(e)} (Code: ${e?.code || 'N/A'})\nAPI URL: ${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}`;
+      console.error('Backend sync failed:', fullError, e);
+      setAuthError(fullError);
       throw e;
     }
   }, []);
@@ -76,7 +84,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ firebaseUser, dbUser, loading, signOut: handleSignOut, syncCurrentDbUser }}
+      value={{
+        firebaseUser,
+        dbUser,
+        loading,
+        authError,
+        clearAuthError,
+        signOut: handleSignOut,
+        syncCurrentDbUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

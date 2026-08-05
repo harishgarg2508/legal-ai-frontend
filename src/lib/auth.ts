@@ -52,27 +52,39 @@ export const handleRedirectResult = async (): Promise<User | null> => {
  * Sends POST /api/v1/auth/sync with Firebase ID token.
  */
 export const syncUserWithBackend = async (user: User) => {
-  // Force refresh token to prevent expired/skewed token errors on mobile browsers
-  const idToken = await user.getIdToken(true);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+  let attempts = 0;
+  const maxAttempts = 3;
 
-  try {
-    const res = await fetch(`${apiUrl}/auth/sync`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idToken }),
-    });
+  while (attempts < maxAttempts) {
+    try {
+      attempts++;
+      // Force refresh token to prevent expired/skewed token errors on mobile browsers
+      const idToken = await user.getIdToken(true);
+      const res = await fetch(`${apiUrl}/auth/sync`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+      });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('Sync HTTP Error:', res.status, errText);
-      throw new Error(`Backend Sync (${res.status}): ${errText || res.statusText}`);
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('Sync HTTP Error:', res.status, errText);
+        throw new Error(`Backend Sync (${res.status}): ${errText || res.statusText}`);
+      }
+
+      return await res.json();
+    } catch (error: any) {
+      console.error(`syncUserWithBackend Attempt ${attempts}/${maxAttempts} failed:`, error);
+      if (attempts >= maxAttempts) {
+        throw new Error(`Failed to fetch from backend (${apiUrl}). Network or CORS issue on mobile device.`);
+      }
+      // Wait 600ms before retrying on mobile network glitch
+      await new Promise((res) => setTimeout(res, 600));
     }
-
-    return res.json();
-  } catch (error: any) {
-    console.error('syncUserWithBackend Exception:', error);
-    throw error;
   }
 };
 
